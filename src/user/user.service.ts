@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { Query } from '@nestjs/graphql';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-    @Query(() => String)
-    async hello() {
-        return "hello world"
+    constructor(
+        @InjectRepository(User)
+        private readonly userRepository: MongoRepository<User>,
+    ) {}
+
+    async findAll(): Promise<User[]> {
+        return this.userRepository.find();
     }
 }

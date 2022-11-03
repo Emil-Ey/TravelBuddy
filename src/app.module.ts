@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { join } from 'path';
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url:
-        'mongodb+srv://<admin>:<password>@chnirt-graphql-apollo-vg0hq.mongodb.net/nest?retryWrites=true&w=majority',
+      `mongodb://root:rootPassXXX@mongodb_container:27017`,
+      // `mongodb://localhost:${process.env.DATABASE_PORT}/${process.env.DATABASE_NAME}`,
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
       useNewUrlParser: true,

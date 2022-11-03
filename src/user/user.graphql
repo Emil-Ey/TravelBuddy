@@ -1,3 +1,31 @@
+type User {
+	id: String!
+	username: String!
+}
+
+type Jwt {
+	accessToken: String
+	refreshToken: String
+}
+
+input UserDto {
+	username: String!
+	password: String!
+}
+
+input UpdatedUserDto {
+	id: String!
+	username: String
+	password: String
+}
+
 type Query {
-	hello: String!
+	users: [String!]
+}
+
+type Mutation {
+	createUser(userDto: UserDto!): User
+	updateUser(updatedUserDto: UpdatedUserDto!): User
+	login(userDto: UserDto!): Jwt
+	logout(refreshToken: String!): Boolean
 }
