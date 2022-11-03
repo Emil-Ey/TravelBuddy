@@ -3,18 +3,39 @@
 TravelBuddy is a backend, for an application where you can find your next travel buddy.
 A frontend might be created in the future, but for now only the backend is being created.
 
-## Technology
+## How to run
 
-The system architecture will contain 3 layers: the service Layer, the
-The system will be built following the MVC (model-view-controller) architecture to allow decoupling and easier adaptability
+### Prerequisites
+
+- npm (I am using version 8.19.2)
+- node (I am using version 19.0.0)
+
+### Running the system
+
+- clone repository
+- create a `.env` in the root of the project
+- Copy the following into the file and input your own values for X, Y, Z:
+  ` ENV=development DATABASE_USERNAME=X DATABASE_PASSWORD=Y DATABASE_PORT=27017 `
+- run `npm install`
+- run `docker-compose -f docker-compose.dev.yml up` to start MongoDB
+- run `npm start`
+- The API is now accessible at http://localhost:3000/
+
+## Technologies
+
+The system architecture will be a monolith containing 3 layers: Controller layer, service layer, and data access layer. This will allow for high decoupling and adaptability, and software that is maintainable.
+The system will take advantage of the dependency injection used through the NestJS framework.
 The backend will be creating using the following technologies:
 
 - Typescript
 - NodeJS
-- Express
+- NestJS
 - GraphQL
 - Apollo
 - MongoDB
+- TypeOrm
+
+The system will be end-to-end tested using a testing framework that is to be determined.
 
 ## Some of the features are:
 
@@ -29,8 +50,3 @@ The backend will be creating using the following technologies:
   - Adding yourself as a potential travel buddy to anothers trip.
   - Accepting a travel buddy on your own trip. If the max number of travel buddies is reached, no more travel buddies can be found.
   - More might be added as the scope is determined along the way.
--
-
-KEYWORDS:
-Monolithic,
-https://masteringbackend.com/posts/nestjs-typescrpt-ultimate-guide
