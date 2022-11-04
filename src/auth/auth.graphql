@@ -1,0 +1,8 @@
+type Jwt {
+	accessToken: String!
+}
+
+type Mutation {
+	login(userDto: UserDto!): Jwt
+	logout(refreshToken: String!): Boolean
+}

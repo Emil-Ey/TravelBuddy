@@ -3,11 +3,10 @@ services:
   mongodb_container:
     image: mongo:latest
     environment:
-      # provide your credentials here
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     ports:
-      - 27017:27017
+      - ${DATABASE_PORT}:${DATABASE_PORT}
     volumes:
       - mongodb_data_container:/data/db
 

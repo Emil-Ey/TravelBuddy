@@ -1,31 +1,28 @@
 type User {
-	id: String!
+	_id: String!
 	username: String!
-}
-
-type Jwt {
-	accessToken: String
-	refreshToken: String
+	description: String!
 }
 
 input UserDto {
 	username: String!
 	password: String!
+	description: String!
 }
 
 input UpdatedUserDto {
-	id: String!
+	_id: String!
 	username: String
 	password: String
+	description: String
 }
 
 type Query {
-	users: [String!]
+	users: [User!]
 }
 
 type Mutation {
 	createUser(userDto: UserDto!): User
 	updateUser(updatedUserDto: UpdatedUserDto!): User
-	login(userDto: UserDto!): Jwt
-	logout(refreshToken: String!): Boolean
+	clearDatabase: Boolean
 }

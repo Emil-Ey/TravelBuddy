@@ -15,11 +15,18 @@ A frontend might be created in the future, but for now only the backend is being
 - clone repository
 - create a `.env` in the root of the project
 - Copy the following into the file and input your own values for X, Y, Z:
-  ` ENV=development DATABASE_USERNAME=X DATABASE_PASSWORD=Y DATABASE_PORT=27017 `
+  ```
+  ENV=development
+  DATABASE_USERNAME=X
+  DATABASE_PASSWORD=Y
+  DATABASE_PORT=27017
+  PORT=3000
+  ```
 - run `npm install`
 - run `docker-compose -f docker-compose.dev.yml up` to start MongoDB
 - run `npm start`
-- The API is now accessible at http://localhost:3000/
+- The API is now accessible at http://localhost:3000/ (or the port that you specified in .env)
+- Documentation can be found in the GraphQL Playground at http://localhost:3000/graphql
 
 ## Technologies
 
