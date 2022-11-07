@@ -19,6 +19,7 @@ input UpdatedUserDto {
 
 type Query {
 	users: [User!]
+	user: User!
 }
 
 type Mutation {

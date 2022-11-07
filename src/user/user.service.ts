@@ -5,6 +5,7 @@ import { UpdatedUserDto, UserDto } from './user.dto';
 import { User } from './user.entity';
 const argon2 = require('argon2');
 import { v4 as uuidv4 } from 'uuid';
+import { UsernameExistsException } from 'src/common/exceptions';
 
 @Injectable()
 export class UserService {
@@ -12,13 +13,31 @@ export class UserService {
         @InjectRepository(User)
         private readonly userRepository: MongoRepository<User>,
     ) {}
+    
 
     async findAll(): Promise<User[]> {
-        return this.userRepository.find();
+        try {
+            return await this.userRepository.find();
+        } catch (err: any) {
+            Logger.log(err, "findAll");
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    async findOneByEmail(username: string): Promise<User> {
-        return await this.userRepository.findOneByOrFail({ username: username });
+    async findOneById(id: string): Promise<User> {
+        try {
+            return await this.userRepository.findOneByOrFail({ _id: id });
+        } catch (err: any) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+    }
+
+    async findOneByUsername(username: string): Promise<User> {
+        try {
+            return await this.userRepository.findOneByOrFail({ username: username });
+        } catch (err: any) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
     }
 
     async createUser(userDto: UserDto): Promise<User> {
@@ -29,9 +48,14 @@ export class UserService {
             user.username = userDto.username;
             user.description = userDto.description;
             user.password = hashedPassword;
-            return this.userRepository.save(user);
-        } catch (err) {
-            Logger.log(err, 'createUser');
+            try {
+                return await this.userRepository.save(user);
+            } catch (err: any) {
+                throw new HttpException('Username taken.', HttpStatus.CONFLICT);
+            }
+        } catch (err: any) {
+            if(err instanceof HttpException) throw err
+            Logger.log(err, "create user")
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     } 
@@ -60,9 +84,19 @@ export class UserService {
             ...(updatedUserDto.password && { 'password': hashedPassword})
         }
 
-        await this.userRepository.update({"_id": updatedUserDto._id}, newObj)
+        try {
+            await this.userRepository.update({"_id": updatedUserDto._id}, newObj)
+        } catch (err: any) {
+            Logger.log(err, "updateUser, updating database");
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        return await this.userRepository.findOneByOrFail({ _id: updatedUserDto._id });
+        try {
+            return await this.userRepository.findOneByOrFail({ _id: updatedUserDto._id });
+        } catch (err: any) {
+            Logger.log(err, "updateUser, getting user");
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
     } 
 
     async clearDatabase(): Promise<Boolean> {

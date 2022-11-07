@@ -5,11 +5,13 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/common.module';
 require('dotenv').config();
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
+      context: ({ req, res }) => ({ req, res }),
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'],
       playground: true
@@ -26,6 +28,7 @@ require('dotenv').config();
     }),
     UserModule,
     AuthModule,
+    CommonModule,
   ],
 })
 export class AppModule {}
