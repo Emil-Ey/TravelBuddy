@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository, ObjectID } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 import { UpdatedUserDto, UserDto } from './user.dto';
 import { User } from './user.entity';
 const argon2 = require('argon2');
-import { v4 as uuidv4 } from 'uuid';
-import { UsernameExistsException } from 'src/common/exceptions';
 
 @Injectable()
 export class UserService {

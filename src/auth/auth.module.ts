@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthResolver } from './auth.resolver';
-import { UserService } from 'src/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
-import { User } from 'src/user/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
+import { UserService } from 'src/user/user.service';
+import { AuthResolver } from './auth.resolver';
+import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 require('dotenv').config();
 
