@@ -5,7 +5,6 @@ export class UserDto {
 }
 
 export class UpdatedUserDto {
-    _id: string;
     username: string;
     password: string;
     description: string;

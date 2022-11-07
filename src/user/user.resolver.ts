@@ -33,8 +33,13 @@ export class UserResolver {
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => User)
-  async updateUser(@Args('updatedUserDto')  updatedUserDto: UpdatedUserDto ) {
-    return this.userService.updateUser(updatedUserDto);
+  async updateUser(
+    @Args('updatedUserDto')  updatedUserDto: UpdatedUserDto,
+    @Context() context: any
+  ) {
+    const jwt = context.req.headers.authorization.replace('Bearer ', '');
+    const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
+    return this.userService.updateUser(user.id, updatedUserDto);
   }
   
   // REMOVE IN PROD

@@ -9,18 +9,21 @@ A frontend might be created in the future, but for now only the backend is being
 
 - npm (I am using version 8.19.2)
 - node (I am using version 19.0.0)
+- docker (I am using version 20.10.21)
+- docker-compose (I am using version 1.29.2)
 
 ### Running the system
 
 - clone repository
 - create a `.env` in the root of the project
-- Copy the following into the file and input your own values for X, Y, Z:
+- Copy the following into the file and input your own values:
   ```
   ENV=development
-  DATABASE_USERNAME=X
-  DATABASE_PASSWORD=Y
+  DATABASE_USERNAME=SOME_USERNAME
+  DATABASE_PASSWORD=A_GOOD_PASSWORD
   DATABASE_PORT=27017
   PORT=3000
+  JWT_KEY=SOMETHING_SECRET
   ```
 - run `npm install`
 - run `docker-compose -f docker-compose.dev.yml up` to start MongoDB
@@ -47,10 +50,9 @@ The system will be end-to-end tested using a testing framework that is to be det
 ## Some of the features are:
 
 - Authentication (username, password)
-- Third party authentication (with Google)
 - JWT tokens to handle auth.
 - CRUD operations where you can
-  - Creating / updating your own user with a profile picture, small description, and other information.
+  - Create / update your own user with a username, password, and small description.
   - Create a new trip, specifying where, how long, how many travel buddies you are looking for and when. The trip might also have a cover photo.
   - Editing an existing trip.
   - Commenting on a specifc trip.

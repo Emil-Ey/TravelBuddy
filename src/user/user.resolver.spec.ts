@@ -1,26 +1,32 @@
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
-import { User } from './user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserResolver } from './user.resolver';
-import { UserService } from './user.service';
+
+const mockUsers = [
+  {
+    "_id": "1234",
+    "username": "test-username",
+    "description": "testing find all users"
+  },
+]
+
+const jwtServiceMock = {
+  decode: jest.fn((jwt: any): object => {  return {id: "1234" }})
+};
 
 describe('UserResolver', () => {
   let resolver: UserResolver;
 
-  let usersArray = [
-    {
-      _id: "1234",
-      username: "test-username",
-      description: "testing find all users"
-    },
-  ]
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserResolver
+        UserResolver,
+        { provide: JwtService, useValue: jwtServiceMock },
+        {
+          provide: JwtAuthGuard,
+          useValue: jest.fn().mockImplementation(() => true),
+        },
       ],
     }).compile();
 
@@ -33,7 +39,7 @@ describe('UserResolver', () => {
 
   describe('findAll', () => {
     it('should get the users array', () => {
-      expect(resolver.users()).toEqual(usersArray);
+      expect(resolver.users()).toEqual(mockUsers);
     });
   });
 });

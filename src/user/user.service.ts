@@ -59,7 +59,7 @@ export class UserService {
         }
     } 
 
-    async updateUser(updatedUserDto: UpdatedUserDto): Promise<User> {
+    async updateUser(id: string, updatedUserDto: UpdatedUserDto): Promise<User> {
         let newObj = {}
         let hashedPassword = undefined
 
@@ -84,14 +84,14 @@ export class UserService {
         }
 
         try {
-            await this.userRepository.update({"_id": updatedUserDto._id}, newObj)
+            await this.userRepository.update({"_id": id}, newObj)
         } catch (err: any) {
             Logger.log(err, "updateUser, updating database");
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         try {
-            return await this.userRepository.findOneByOrFail({ _id: updatedUserDto._id });
+            return await this.userRepository.findOneByOrFail({ _id: id });
         } catch (err: any) {
             Logger.log(err, "updateUser, getting user");
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
