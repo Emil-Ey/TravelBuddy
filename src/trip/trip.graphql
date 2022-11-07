@@ -7,7 +7,7 @@ input CreateTripDto {
 type TripDto {
 	_id: String!
 	user: [User!]!
-	comments: [Comments!]!
+	comments: [CommentDto!]!
 	country: String!
 	description: String!
 	numberOfTravelBuddies: Int!
@@ -16,7 +16,7 @@ type TripDto {
 	openForMoreTravelBuddies: Boolean!
 }
 
-type UpdatedTripDto {
+input UpdatedTripDto {
 	_id: String
 	country: String
 	description: String
