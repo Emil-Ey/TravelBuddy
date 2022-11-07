@@ -1,8 +1,6 @@
 import { Comment } from "src/comment/comment.entity";
-import { Country } from "src/common/countries.enum";
 import { User } from "src/user/user.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToOne, ObjectIdColumn, OneToMany, UpdateDateColumn } from "typeorm";
-
 
 @Entity()
 export class Trip {
@@ -17,7 +15,7 @@ export class Trip {
     comments: Comment[]
 
     @Column()
-    country: Country;
+    country: String;
 
     @Column({
         length: 400

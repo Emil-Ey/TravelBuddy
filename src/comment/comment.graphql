@@ -1,0 +1,21 @@
+input CreateCommentDto {
+	commentId: String!
+	text: String!
+}
+
+type CommentDto {
+	_id: String!
+	user: User!
+	text: String!
+}
+
+type UpdatedCommentDto {
+	_id: String!
+	text: String!
+}
+
+type Query {
+}
+
+type Mutation {
+}

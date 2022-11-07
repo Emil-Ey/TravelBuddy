@@ -1,3 +1,38 @@
-input createTripDto {
-    
+input CreateTripDto {
+	country: String!
+	description: String!
+	numberOfTravelBuddies: Int!
+}
+
+type TripDto {
+	_id: String!
+	user: [User!]!
+	comments: [Comments!]!
+	country: String!
+	description: String!
+	numberOfTravelBuddies: Int!
+	possibleTravelBuddies: [User!]!
+	travelBuddies: [User!]!
+	openForMoreTravelBuddies: Boolean!
+}
+
+type UpdatedTripDto {
+	_id: String
+	country: String
+	description: String
+	numberOfTravelBuddies: Int
+	openForMoreTravelBuddies: Boolean!
+}
+
+type Query {
+	trips: [TripDto!]!
+	trip(id: String!): TripDto!
+}
+
+type Mutation {
+	createTrip(createTripDto: CreateTripDto!): TripDto!
+	updateTrip(updatedTripDto: UpdatedTripDto!): TripDto!
+	clearDatabase: Boolean
+	removePossibleTravelBuddy(tripId: String!, userId: String!): TripDto!
+	removeTravelBuddy(tripId: String!, userId: String!): TripDto!
 }

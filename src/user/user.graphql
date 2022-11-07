@@ -18,7 +18,7 @@ input UpdatedUserDto {
 }
 
 type Query {
-	users: [User!]
+	users: [User!]!
 	user: User!
 }
 
