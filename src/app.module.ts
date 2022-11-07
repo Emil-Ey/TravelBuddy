@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { UserModule } from './user/user.module';
 import { TripModule } from './trip/trip.module';
+import { CommentModule } from './comment/comment.module';
 require('dotenv').config();
 
 @Module({
@@ -31,6 +32,7 @@ require('dotenv').config();
     AuthModule,
     CommonModule,
     TripModule,
+    CommentModule,
   ],
 })
 export class AppModule {}

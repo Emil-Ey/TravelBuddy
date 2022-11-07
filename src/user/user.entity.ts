@@ -1,4 +1,5 @@
-import { Comment, Trip } from "src/trip/trip.entity";
+import { Comment } from "src/comment/comment.entity";
+import { Trip } from "src/trip/trip.entity";
 import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, ObjectIdColumn, OneToMany, UpdateDateColumn } from "typeorm";
 
 @Entity()
