@@ -11,6 +11,6 @@ import { UserService } from './user.service';
   imports: [
     TypeOrmModule.forFeature([User]), PassportModule
   ],
-    providers: [UserResolver, UserService, JwtStrategy, JwtService],
+  providers: [UserResolver, UserService, JwtStrategy, JwtService],
 })
 export class UserModule {}

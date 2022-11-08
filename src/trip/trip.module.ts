@@ -1,8 +1,18 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { User } from 'src/user/user.entity';
+import { UserService } from 'src/user/user.service';
+import { Trip } from './trip.entity';
 import { TripResolver } from './trip.resolver';
 import { TripService } from './trip.service';
 
 @Module({
-  providers: [TripResolver, TripService]
+  imports: [
+    TypeOrmModule.forFeature([User, Trip]), PassportModule
+  ],
+  providers: [TripResolver, TripService, UserService, JwtStrategy, JwtService],
 })
 export class TripModule {}
