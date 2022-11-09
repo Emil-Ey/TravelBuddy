@@ -11,10 +11,8 @@ export class AuthResolver {
     constructor(private authService: AuthService) {}
 
     @Mutation(() => JwtDto)
-    async login(@Args('userLoginDto') userLoginDto: UserLoginDto) {
-        const user = await this.authService.login(userLoginDto);
-
-        return await this.authService.generateJwt(user)
+    async login(@Args('userLoginDto') userLoginDto: UserLoginDto): Promise<JwtDto> {
+        return this.authService.login(userLoginDto);
     }
 
     @UseGuards(JwtAuthGuard)

@@ -6,7 +6,7 @@ input CreateTripDto {
 
 type TripDto {
 	_id: String!
-	user: [User!]!
+	user: User!
 	comments: [CommentDto!]!
 	country: String!
 	description: String!
@@ -32,7 +32,7 @@ type Query {
 type Mutation {
 	createTrip(createTripDto: CreateTripDto!): TripDto!
 	updateTrip(updatedTripDto: UpdatedTripDto!): TripDto!
-	clearDatabase: Boolean
+	clearDatabaseTrips: Boolean
 	removePossibleTravelBuddy(tripId: String!, userId: String!): TripDto!
 	removeTravelBuddy(tripId: String!, userId: String!): TripDto!
 }

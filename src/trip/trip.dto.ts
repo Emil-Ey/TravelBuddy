@@ -1,28 +1,25 @@
-import { CommentDto } from "src/comment/comment.dto";
-import { User } from "src/user/user.entity"
+import { Field, InputType } from "@nestjs/graphql";
 
-export class TripDto {
-    _id: string;
-	user: User[];
-	comments: CommentDto;
-	country: string;
-	description: string;
-	numberOfTravelBuddies: number;
-	possibleTravelBuddies: User[];
-	travelBuddies: User[];
-	openForMoreTravelBuddies: Boolean;
-}
-
+@InputType()
 export class CreateTripDto {
+	@Field()
     country: string;
+	@Field()
     description: string;
-    numberOfTravelBuddies: number;
+    @Field()
+	numberOfTravelBuddies: number;
 }
 
+@InputType()
 export class UpdatedTripDto {
-    _id: string;
+    @Field()
+	_id: string;
+	@Field()
 	country: string;
+	@Field()
 	description: string;
+	@Field()
 	numberOfTravelBuddies: number;
+	@Field()
 	openForMoreTravelBuddies: Boolean;
 }

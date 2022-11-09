@@ -13,12 +13,12 @@ export class AuthService {
         private jwtTokenService: JwtService,
     ) {}
     
-    async login(userLoginDto: UserLoginDto): Promise<any>   {
+    async login(userLoginDto: UserLoginDto): Promise<JwtDto>   {
         const user = await this.userService.findOneByUsername(userLoginDto.username);
         try {
             if (await argon2.verify(user.password, userLoginDto.password)) {
                 delete user.password;
-                return user;
+                return this.generateJwt(user);
             } else {
                 throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
             }
@@ -35,8 +35,6 @@ export class AuthService {
             description: user.description
         };
       
-        return {
-            accessToken: this.jwtTokenService.sign(payload),
-        };
+        return { accessToken: this.jwtTokenService.sign(payload) };
     }
 }

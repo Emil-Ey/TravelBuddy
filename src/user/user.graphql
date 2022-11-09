@@ -25,5 +25,5 @@ type Query {
 type Mutation {
 	createUser(userDto: UserDto!): User
 	updateUser(updatedUserDto: UpdatedUserDto!): User
-	clearDatabase: Boolean
+	clearDatabaseUsers: Boolean
 }

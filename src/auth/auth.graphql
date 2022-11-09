@@ -1,13 +1,9 @@
-type Jwt {
-	accessToken: String!
-}
-
 input UserLoginDto {
 	username: String!
 	password: String!
 }
 
 type Mutation {
-	login(userLoginDto: UserLoginDto!): Jwt!
+	login(userLoginDto: UserLoginDto!): String!
 	logout: Boolean
 }

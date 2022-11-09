@@ -6,7 +6,7 @@ import { UpdatedUserDto, UserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
   constructor(private userService: UserService, private jwtService: JwtService) {}
 
@@ -45,7 +45,7 @@ export class UserResolver {
   // REMOVE IN PROD
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Boolean)
-  async clearDatabase() {
+  async clearDatabaseUsers() {
     return this.userService.clearDatabase();
   }
 }

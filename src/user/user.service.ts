@@ -18,7 +18,7 @@ export class UserService {
         try {
             return await this.userRepository.find();
         } catch (err: any) {
-            Logger.log(err, "findAll");
+            Logger.log(err, "findAll users");
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -41,6 +41,11 @@ export class UserService {
 
     async createUser(userDto: UserDto): Promise<User> {
         const user = new User();
+
+        if(userDto.description.length > 200) {
+            throw new HttpException('Too long description', HttpStatus.BAD_REQUEST);
+        }
+
         try {
             user._id = uuidv4();
             const hashedPassword = await argon2.hash(userDto.password);

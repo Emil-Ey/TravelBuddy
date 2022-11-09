@@ -16,7 +16,8 @@ require('dotenv').config();
       context: ({ req, res }) => ({ req, res }),
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'],
-      playground: true
+      playground: true,
+      autoSchemaFile: true,
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',

@@ -1,4 +1,5 @@
 import { Resolver } from '@nestjs/graphql';
+import { Comment } from './comment.entity';
 
-@Resolver()
+@Resolver(Comment)
 export class CommentResolver {}

@@ -17,5 +17,5 @@ input UpdatedCommentDto {
 type Mutation {
 	createComment(CreateCommentDto: CreateCommentDto!): CommentDto!
 	removeComment(updatedCommentDto: UpdatedCommentDto!): CommentDto!
-	clearDatabase: Boolean
+	clearDatabaseComments: Boolean
 }

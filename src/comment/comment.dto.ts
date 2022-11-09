@@ -1,17 +1,17 @@
-import { User } from "src/user/user.entity";
+import { Field, InputType } from "@nestjs/graphql";
 
-export class CommentDto {
-    _id: string;
-    user: User;
-    text: string;
-}
-
+@InputType()
 export class CreateCommentDto {
+    @Field()
     tripId: string;
+    @Field()
     text: string;
 }
 
+@InputType()
 export class UpdatedCommentDto {
+    @Field()
     _id: string;
+    @Field()
     text: string;
 }
