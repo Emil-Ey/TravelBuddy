@@ -8,16 +8,16 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Resolver()
 export class AuthResolver {
-    constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
-    @Mutation(() => JwtDto)
-    async login(@Args('userLoginDto') userLoginDto: UserLoginDto): Promise<JwtDto> {
-        return this.authService.login(userLoginDto);
-    }
+  @Mutation(() => JwtDto)
+  async login(@Args('userLoginDto') userLoginDto: UserLoginDto): Promise<JwtDto> {
+      return this.authService.login(userLoginDto);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Mutation(() => Boolean)
-    async logout() {
-        return true
-    }
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Boolean)
+  async logout() {
+      return true
+  }
 }

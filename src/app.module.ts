@@ -2,12 +2,10 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { CommonModule } from './common/common.module';
-import { UserModule } from './user/user.module';
-import { TripModule } from './trip/trip.module';
 import { CommentModule } from './comment/comment.module';
+import { TripModule } from './trip/trip.module';
+import { UserModule } from './user/user.module';
 require('dotenv').config();
 
 @Module({
@@ -20,18 +18,21 @@ require('dotenv').config();
       autoSchemaFile: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url:
-      `mongodb://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@0.0.0.0:${process.env.DATABASE_PORT}`,
-      // `mongodb://localhost:${process.env.DATABASE_PORT}/${process.env.DATABASE_NAME}`,
-      entities: [join(__dirname, '**/**.entity{.ts,.js}')],
-      synchronize: true,
-      useNewUrlParser: true,
+      type: 'postgres',
+      host: process.env.DATABASE_HOST,
+      port: +process.env.DATABASE_PORT,
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      entities: [__dirname + '/**/*.entity.ts', __dirname + '/**/*.entity.js'],
+      migrationsRun: false,
       logging: true,
+      migrationsTableName: "migration",
+      migrations: [__dirname + '/migration/**/*.ts', __dirname + '/migration/**/*.js'],
+      synchronize: true,
     }),
     UserModule,
     AuthModule,
-    CommonModule,
     TripModule,
     CommentModule,
   ],

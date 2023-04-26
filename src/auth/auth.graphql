@@ -1,9 +1,9 @@
 input UserLoginDto {
-	username: String!
-	password: String!
+  username: String!
+  password: String!
 }
 
 type Mutation {
-	login(userLoginDto: UserLoginDto!): String!
-	logout: Boolean
+  login(userLoginDto: UserLoginDto!): String!
+  logout: Boolean
 }

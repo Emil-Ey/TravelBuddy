@@ -20,20 +20,21 @@ A frontend might be created in the future, but for now only the backend is being
   ```
   ENV=development
   DATABASE_USERNAME=SOME_USERNAME
-  DATABASE_PASSWORD=A_GOOD_PASSWORD
+  DATABASE_PASSWORD=SECRET_PASSWORD
   DATABASE_PORT=27017
   PORT=3000
-  JWT_KEY=SOMETHING_SECRET
+  JWT_KEY=SUPER_SECRET_KEY
   ```
 - run `npm install`
-- run `docker-compose -f docker-compose.dev.yml up` to start MongoDB
+- run `docker-compose -f docker-compose.dev.yml up` to start PostgresQL
 - run `npm start`
 - The API is now accessible at http://localhost:3000/ (or the port that you specified in .env)
 - Documentation can be found in the GraphQL Playground at http://localhost:3000/graphql
 
 ## Technologies
 
-The system architecture will be a monolith containing 3 layers: Controller layer, service layer, and data access layer. This will allow for high decoupling and adaptability, and software that is maintainable.
+The system architecture will be a monolith containing 3 layers: Resolver layer, service layer, and data access layer. This will allow for high decoupling and adaptability, and software that is maintainable.
+The resolver layer will receive the incomming request, and call the relevant service. The services will contain all "business" logic, and will be written to be as reusable as possible. The data access layer will be containing of the framework TypeOrm, which will handle database access.
 The system will take advantage of the dependency injection used through the NestJS framework.
 The backend will be creating using the following technologies:
 
@@ -42,7 +43,7 @@ The backend will be creating using the following technologies:
 - NestJS
 - GraphQL
 - Apollo
-- MongoDB
+- PostgresQL
 - TypeOrm
 
 The system will be end-to-end tested using a testing framework that is to be determined.

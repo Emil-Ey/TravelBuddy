@@ -30,15 +30,14 @@
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
-    "@types/mongodb": "^4.0.7",
     "apollo-server-express": "^3.11.1",
     "argon2": "^0.30.1",
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
-    "mongodb": "^3.7.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -89,7 +88,7 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-	  "modulePaths": [
+    "modulePaths": [
       "<rootDir>"
     ],
     "moduleDirectories": [

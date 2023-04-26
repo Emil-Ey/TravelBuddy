@@ -6,11 +6,15 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { User } from './user.entity';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
+import { CommentService } from 'src/comment/comment.service';
+import { Trip } from 'src/trip/trip.entity';
+import { Comment } from 'src/comment/comment.entity';
+import { TripService } from 'src/trip/trip.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]), PassportModule
+    TypeOrmModule.forFeature([User, Trip, Comment]), PassportModule,
   ],
-  providers: [UserResolver, UserService, JwtStrategy, JwtService],
+  providers: [UserResolver, UserService, JwtStrategy, JwtService, CommentService, TripService],
 })
 export class UserModule {}
