@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Comment } from "src/comment/comment.entity";
 import { Trip } from "src/trip/trip.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, ObjectIdColumn, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, ObjectIdColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @ObjectType()
 @Entity()
@@ -23,20 +23,20 @@ export class User {
   })
   description: string;
 
+  @Field(() => [Trip])
+  @OneToMany(() => Trip, (trip) => trip.user)
+  trips: Trip[];
+
   @Field(() => [Comment])
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
 
   @Field(() => [Trip])
-  @OneToMany(() => Trip, (trip) => trip.user)
-  trips: Trip[];
-
-  @Field(() => [Trip])
-  @ManyToOne(() => Trip, (trip) => trip.possibleTravelBuddies)
+  @ManyToMany(() => Trip, (trip) => trip.possibleTravelBuddies)
   possibleTrips: Trip[];
 
   @Field(() => [Trip])
-  @ManyToOne(() => Trip, (trip) => trip.travelBuddies)
+  @ManyToMany(() => Trip, (trip) => trip.travelBuddies)
   acceptedTrips: Trip[];
 
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })

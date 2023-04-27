@@ -18,7 +18,20 @@ export class UserService {
     try {
       return await this.userRepository.find();
     } catch (err: any) {
-      Logger.log(err, "findAll users");
+      Logger.error(err, "findAll users");
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async findUsersByIds(ids: string[]): Promise<User[]> {
+    if(ids.length < 1) return []
+    console.log("USER IDS ", ids)
+    try {
+      return await this.userRepository.createQueryBuilder()
+      .where("User._id IN (:...userIds)", { userIds: ids })
+      .getMany();
+    } catch (err: any) {
+      Logger.error(err, "findAll users by ids");
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -59,7 +72,7 @@ export class UserService {
       }
     } catch (err: any) {
       if(err instanceof HttpException) throw err
-      Logger.log(err, "create user")
+      Logger.error(err, "create user")
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   } 
@@ -77,7 +90,7 @@ export class UserService {
         hashedPassword = await argon2.hash(updatedUserDto.password);
         newObj = {'password': hashedPassword}
       } catch (err) {
-        Logger.log(err, 'updateUser');
+        Logger.error(err, 'updateUser');
         throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -91,20 +104,16 @@ export class UserService {
     try {
       await this.userRepository.update({"_id": id}, newObj)
     } catch (err: any) {
-      Logger.log(err, "updateUser, updating database");
+      Logger.error(err, "updateUser, updating database");
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    try {
-      return await this.userRepository.findOneByOrFail({ _id: id });
-    } catch (err: any) {
-      Logger.log(err, "updateUser, getting user");
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+    // Cannot return object when saving, so we must find it again and return it.
+    return this.findOneById(id)
   } 
 
   async clearDatabase(): Promise<Boolean> {
-    this.userRepository.clear();
+    await this.userRepository.query('DELETE FROM "user"');
     return true
   }
 }

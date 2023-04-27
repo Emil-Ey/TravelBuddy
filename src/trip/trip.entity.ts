@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Comment } from "src/comment/comment.entity";
 import { User } from "src/user/user.entity";
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @ObjectType()
 @Entity()
@@ -10,12 +10,11 @@ export class Trip {
   @PrimaryGeneratedColumn('uuid')
   _id: string;
 
-  @Field(() => User)
   @ManyToOne(() => User, (user) => user.trips)
+  @JoinColumn({ name: 'userId' })
   user: User;
-
-  @Field()
-  @Column({nullable: false})
+  
+  @Column({ name: 'userId' })
   userId: string;
   
   @Field(() => [Comment])
@@ -27,9 +26,7 @@ export class Trip {
   country: String;
 
   @Field()
-  @Column({
-      length: 400
-  })
+  @Column({ length: 400 })
   description: string;
 
   @Field()
@@ -37,14 +34,29 @@ export class Trip {
   numberOfTravelBuddies: number;
 
   @Field(() => [User])
-  @OneToMany(() => User, (user) => user.possibleTrips)
+  @ManyToMany(() => User, (user) => user.possibleTrips, { cascade: true })
+  @JoinTable()
   possibleTravelBuddies: User[];
 
+  @Column("text", { array: true })
+  possibleTravelBuddiesIds: string[];
+
   @Field(() => [User])
-  @OneToMany(() => User, (user) => user.acceptedTrips)
+  @ManyToMany(() => User, (user) => user.acceptedTrips, { cascade: true })
+  @JoinTable({
+    name: 'trip_travel_buddies', // table name for the junction table of this relation
+    joinColumn: {
+      name: 'tripId',
+      referencedColumnName: '_id',
+    },
+    inverseJoinColumn: {
+      name: 'userId',
+      referencedColumnName: '_id',
+    },
+  })
   travelBuddies: User[];
 
-  @Field()
+  @Field(() => Boolean)
   @Column()
   openForMoreTravelBuddies: Boolean;
 

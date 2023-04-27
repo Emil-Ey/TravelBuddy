@@ -6,9 +6,11 @@ import { Comment } from 'src/comment/comment.entity';
 import { CommentService } from 'src/comment/comment.service';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
-import { CreateTripDto } from './trip.dto';
+import { CreateTripDto, TravelBuddyDto, UpdatedTripDto } from './trip.dto';
 import { Trip } from './trip.entity';
 import { TripService } from './trip.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Resolver(Trip)
 export class TripResolver {
@@ -16,29 +18,24 @@ export class TripResolver {
     private tripService: TripService, 
     private userService: UserService, 
     private commentService: CommentService, 
-    private jwtService: JwtService 
+    private jwtService: JwtService,
+    @InjectRepository(Trip)
+    private readonly tripRepository: Repository<Trip>
   ) {}
-    
-    
+  
   @ResolveField('user', () => User)
   user(@Root() trip: Trip) {
     return this.userService.findOneById(trip.userId);
   }
 
   @ResolveField('possibleTravelBuddies', () => [User])
-  possibleTravelBuddy(@Root() trip: Trip) {
-    let users = [];
-    console.log("trip.comments", trip.comments)
-    trip.possibleTravelBuddies?.forEach(async possibleTravelBuddy => {
-        users.push(await this.userService.findOneById(possibleTravelBuddy._id))
-    })
-    return users;
+  async possibleTravelBuddy(@Root() trip: Trip) {
+    return this.userService.findUsersByIds(trip.possibleTravelBuddiesIds)
   }
 
   @ResolveField('travelBuddies', () => [User])
   travelBuddy(@Root() trip: Trip) {
     let users = [];
-    console.log("trip.comments", trip.comments)
     trip.travelBuddies?.forEach(async travelBuddy => {
         users.push(await this.userService.findOneById(travelBuddy._id))
     })
@@ -48,7 +45,6 @@ export class TripResolver {
   @ResolveField('comments', () => [Comment])
   comment(@Root() trip: Trip) {
     let comments = [];
-    console.log("trip.comments", trip.comments)
     trip.comments?.forEach(async comment => {
         comments.push(await this.commentService.findOneById(comment._id))
     })
@@ -76,6 +72,22 @@ export class TripResolver {
     const jwt = context.req.headers.authorization.replace('Bearer ', '');
     const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
     return this.tripService.createTrip(createTripDto, user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Trip)
+  async updateTrip(
+    @Args('updatedTripDto') updatedTripDto: UpdatedTripDto
+  ) {
+    return this.tripService.updateTrip(updatedTripDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Trip)
+  async addPossibleTravelBuddy(
+    @Args('addPossibleTravelBuddyDto') addPossibleTravelBuddyDto: TravelBuddyDto
+  ) {
+    return this.tripService.addPossibleTravelBuddyDto(addPossibleTravelBuddyDto);
   }
 
   // REMOVE IN PROD

@@ -3,16 +3,16 @@ import { Field, InputType } from "@nestjs/graphql";
 @InputType()
 export class CreateTripDto {
 	@Field()
-    country: string;
+  country: string;
 	@Field()
-    description: string;
-    @Field()
+  description: string;
+  @Field()
 	numberOfTravelBuddies: number;
 }
 
 @InputType()
 export class UpdatedTripDto {
-    @Field()
+  @Field()
 	_id: string;
 	@Field()
 	country: string;
@@ -22,4 +22,12 @@ export class UpdatedTripDto {
 	numberOfTravelBuddies: number;
 	@Field()
 	openForMoreTravelBuddies: Boolean;
+}
+
+@InputType()
+export class TravelBuddyDto {
+  @Field()
+	tripId: string;
+  @Field()
+	userId: string;
 }

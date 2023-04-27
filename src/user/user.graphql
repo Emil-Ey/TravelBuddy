@@ -1,29 +1,31 @@
 type User {
-	_id: String!
-	username: String!
-	description: String!
+  _id: String!
+  username: String!
+  description: String!
 }
 
 input UserDto {
-	username: String!
-	password: String!
-	description: String!
+  username: String!
+  password: String!
+  description: String!
 }
 
 input UpdatedUserDto {
-	_id: String!
-	username: String
-	password: String
-	description: String
+  _id: String!
+  username: String
+  password: String
+  description: String
 }
 
 type Query {
-	users: [User!]!
-	user: User!
+  users: [User!]!
+  user: User!
 }
 
 type Mutation {
-	createUser(userDto: UserDto!): User
-	updateUser(updatedUserDto: UpdatedUserDto!): User
-	clearDatabaseUsers: Boolean
+  createUser(userDto: UserDto!): User
+  updateUser(updatedUserDto: UpdatedUserDto!): User
+
+  # REMOVE IN PROD
+  clearDatabaseUsers: Boolean
 }

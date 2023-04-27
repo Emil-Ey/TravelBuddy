@@ -21,6 +21,11 @@ input UpdatedTripDto {
   openForMoreTravelBuddies: Boolean!
 }
 
+input TravelBuddyDto {
+  tripId: String
+  userId: String
+}
+
 type Query {
   trips: [TripDto!]!
   trip(id: String!): TripDto!
@@ -29,7 +34,13 @@ type Query {
 type Mutation {
   createTrip(createTripDto: CreateTripDto!): TripDto!
   updateTrip(updatedTripDto: UpdatedTripDto!): TripDto!
-  clearDatabaseTrips: Boolean
+  addPossibleTravelBuddy(addPossibleTravelBuddyDto: TravelBuddyDto): TripDto
   removePossibleTravelBuddy(tripId: String!, userId: String!): TripDto!
+  promotePossibleTravelBuddy(
+    promotePossibleTravelBuddyDto: TravelBuddyDto
+  ): TripDto!
   removeTravelBuddy(tripId: String!, userId: String!): TripDto!
+
+  # REMOVE IN PROD
+  clearDatabaseTrips: Boolean
 }

@@ -25,36 +25,7 @@ export class UserResolver {
 
   @ResolveField("trips", () => [Trip])
   trip(@Root() user: User) {
-    let trips = [];
-    user.trips?.forEach(async trip => {
-      trips.push(await this.tripService.findOneById(trip._id))
-    })
-    return trips;
-  }
-
-  @ResolveField("possibleTrips", () => [Trip])
-  possibleTrip(@Root() user: User) {
-    let trips = [];
-    user.possibleTrips?.forEach(async trip => {
-      trips.push(await this.tripService.findOneById(trip._id))
-    })
-    return trips;
-  }
-
-  @ResolveField("acceptedTrips", () => [Trip])
-  acceptedTrip(@Root() user: User) {
-    let trips = [];
-    user.acceptedTrips?.forEach(async trip => {
-      trips.push(await this.tripService.findOneById(trip._id))
-    })
-    return trips;
-  }
-
-  // REMOVE IN PROD
-  @UseGuards(JwtAuthGuard)
-  @Query(() => [User])
-  async users() {
-    return this.userService.findAll();
+    return this.tripService.findByUserId(user._id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -79,6 +50,13 @@ export class UserResolver {
     const jwt = context.req.headers.authorization.replace('Bearer ', '');
     const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
     return this.userService.updateUser(user.id, updatedUserDto);
+  }
+
+  // REMOVE IN PROD
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [User])
+  async users() {
+    return this.userService.findAll();
   }
   
   // REMOVE IN PROD
