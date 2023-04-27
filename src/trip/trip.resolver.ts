@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, ResolveField, Resolver, Root } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -35,11 +35,7 @@ export class TripResolver {
 
   @ResolveField('travelBuddies', () => [User])
   travelBuddy(@Root() trip: Trip) {
-    let users = [];
-    trip.travelBuddies?.forEach(async travelBuddy => {
-        users.push(await this.userService.findOneById(travelBuddy._id))
-    })
-    return users;
+    return this.userService.findUsersByIds(trip.travelBuddiesIds)
   }
 
   @ResolveField('comments', () => [Comment])
@@ -85,9 +81,60 @@ export class TripResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Trip)
   async addPossibleTravelBuddy(
-    @Args('addPossibleTravelBuddyDto') addPossibleTravelBuddyDto: TravelBuddyDto
+    @Args('tripId') tripId: string ,
+    @Context() context: any
   ) {
-    return this.tripService.addPossibleTravelBuddyDto(addPossibleTravelBuddyDto);
+    // Get user id from JWT
+    const jwt = context.req.headers.authorization.replace('Bearer ', '');
+    const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
+    
+    // Add possible travel buddy to trip
+    return this.tripService.addPossibleTravelBuddy(tripId, user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Trip)
+  async removePossibleTravelBuddy(
+    @Args('travelBuddyDto') travelBuddyDto: TravelBuddyDto,
+    @Context() context: any
+  ) {
+    // Get user id from JWT
+    const jwt = context.req.headers.authorization.replace('Bearer ', '');
+    const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
+    // Get trip
+    const trip = await this.tripService.findOneById(travelBuddyDto.tripId);
+
+    // Check if owner of trip and remove possible travel buddy
+    if(user.id === trip.userId) {
+      return this.tripService.removePossibleTravelBuddy(trip, travelBuddyDto.userId);
+    }
+
+    // Removing self as travel buddy
+    if(user.id === travelBuddyDto.userId) {
+      return this.tripService.removePossibleTravelBuddy(trip, travelBuddyDto.userId);
+    }
+
+    throw new HttpException('You are not the owner of this trip, and cannot remove another user as a possible travel buddy', HttpStatus.UNAUTHORIZED);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Trip)
+  async promotePossibleTravelBuddy(
+    @Args('travelBuddyDto') travelBuddyDto: TravelBuddyDto,
+    @Context() context: any
+  ) {
+    // Get user id from JWT
+    const jwt = context.req.headers.authorization.replace('Bearer ', '');
+    const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
+    // Get trip
+    const trip = await this.tripService.findOneById(travelBuddyDto.tripId);
+
+    // Check if owner of trip and promote possible travel buddy
+    if(user.id === trip.userId) {
+      return this.tripService.promotePossibleTravelBuddy(trip, travelBuddyDto.userId);
+    }
+
+    throw new HttpException('You are not the owner of this trip, and cannot promote a possible travel buddy', HttpStatus.UNAUTHORIZED);
   }
 
   // REMOVE IN PROD

@@ -61,6 +61,7 @@ export class TripService {
       trip.possibleTravelBuddies = [];
       trip.possibleTravelBuddiesIds = [];
       trip.travelBuddies = [];
+      trip.travelBuddiesIds = [];
       trip.openForMoreTravelBuddies = true;
       console.log(trip);
       const newTrip = await this.tripRepository.save(trip);
@@ -92,13 +93,56 @@ export class TripService {
     return this.findOneById(id)
   }
 
-  async addPossibleTravelBuddyDto(travelBuddyDto: TravelBuddyDto): Promise<Trip> {
-    const trip = await this.findOneById(travelBuddyDto.tripId);
-    const user = await this.userService.findOneById(travelBuddyDto.userId)
-    if(trip.possibleTravelBuddiesIds.includes(user._id)) return this.tripRepository.save(trip);
-    let possibleTravelBuddiesCopy = JSON.parse(JSON.stringify(!trip.possibleTravelBuddies ? [] : trip.possibleTravelBuddies)); 
+  async addPossibleTravelBuddy(tripId: string, userId: string): Promise<Trip> {
+    // Get trip
+    const trip = await this.findOneById(tripId);
+
+    // Check if user is the "owner" of the trip
+    if(trip.userId == userId) throw new HttpException('You are the owner of this trip and cannot be added as a possible travel buddy.', HttpStatus.UNAUTHORIZED);
+    // Check if user is already in list of possible travel buddies
+    if(trip.possibleTravelBuddiesIds.includes(userId)) return this.tripRepository.save(trip);
+
+    // deep copy possibleTravelBuddiesIds
     let possibleTravelBuddiesIdsCopy = JSON.parse(JSON.stringify(!trip.possibleTravelBuddiesIds ? [] : trip.possibleTravelBuddiesIds)); 
-    let newObj = { 'possibleTravelBuddies': [...possibleTravelBuddiesCopy, user], 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy, user._id] }
+    
+    // Create new object with appended arrays
+    let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy, userId] }
+
+    // Return the saved trip
+    return this.tripRepository.save({...trip, ...newObj});
+  }
+
+  async removePossibleTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
+
+    // deep copy possibleTravelBuddiesIds
+    let possibleTravelBuddiesIdsCopy = JSON.parse(JSON.stringify(!trip.possibleTravelBuddiesIds ? [] : trip.possibleTravelBuddiesIds)); 
+    possibleTravelBuddiesIdsCopy = possibleTravelBuddiesIdsCopy.filter((buddyId: string) => buddyId != userId);
+
+    // Create new object with appended arrays
+    let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy] }
+
+    // Return the saved trip
+    return this.tripRepository.save({...trip, ...newObj});
+  }
+
+  async promotePossibleTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
+
+    // deep copy possibleTravelBuddiesIds
+    let possibleTravelBuddiesIdsCopy = JSON.parse(JSON.stringify(!trip.possibleTravelBuddiesIds ? [] : trip.possibleTravelBuddiesIds)); 
+    // deep copy travelbuddiesIds
+    let travelBuddiesIdsCopy = JSON.parse(JSON.stringify(!trip.travelBuddiesIds ? [] : trip.travelBuddiesIds)); 
+
+    // Check user is already a possible travel buddy
+    if(!possibleTravelBuddiesIdsCopy.includes(userId)) {
+      throw new HttpException('Possible travel buddy not found', HttpStatus.NOT_FOUND);
+    }
+    // Remove user from possible travel buddy
+    possibleTravelBuddiesIdsCopy = possibleTravelBuddiesIdsCopy.filter((buddyId: string) => buddyId != userId);
+
+    // Create new object with appended travelBuddiesIds array
+    let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy], 'travelBuddiesIds': [...travelBuddiesIdsCopy, userId] }
+
+    // Return the saved trip
     return this.tripRepository.save({...trip, ...newObj});
   }
 

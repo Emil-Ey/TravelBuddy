@@ -43,18 +43,11 @@ export class Trip {
 
   @Field(() => [User])
   @ManyToMany(() => User, (user) => user.acceptedTrips, { cascade: true })
-  @JoinTable({
-    name: 'trip_travel_buddies', // table name for the junction table of this relation
-    joinColumn: {
-      name: 'tripId',
-      referencedColumnName: '_id',
-    },
-    inverseJoinColumn: {
-      name: 'userId',
-      referencedColumnName: '_id',
-    },
-  })
+  @JoinTable()
   travelBuddies: User[];
+
+  @Column("text", { array: true })
+  travelBuddiesIds: string[];
 
   @Field(() => Boolean)
   @Column()
