@@ -39,7 +39,8 @@ type Mutation {
   promotePossibleTravelBuddy(
     promotePossibleTravelBuddyDto: TravelBuddyDto!
   ): TripDto!
-  removeTravelBuddy(travelBuddyDto: TravelBuddyDto): TripDto!
+  demoteTravelBuddy(travelBuddyDto: TravelBuddyDto!): TripDto!
+  removeTravelBuddy(travelBuddyDto: TravelBuddyDto!): TripDto!
 
   # REMOVE IN PROD
   clearDatabaseTrips: Boolean
