@@ -97,8 +97,13 @@ export class TripService {
     // Get trip
     const trip = await this.findOneById(tripId);
 
+    // Check if trip is "openForMoreTravelBuddies"
+    if(!trip.openForMoreTravelBuddies) {
+      throw new HttpException('Trip is no longer open for more travel buddies.', HttpStatus.BAD_REQUEST);
+    }
+
     // Check if user is the "owner" of the trip
-    if(trip.userId == userId) throw new HttpException('You are the owner of this trip and cannot be added as a possible travel buddy.', HttpStatus.UNAUTHORIZED);
+    if(trip.userId == userId) throw new HttpException('You are the owner of this trip and cannot be added as a possible travel buddy.', HttpStatus.FORBIDDEN);
     // Check if user is already in list of possible travel buddies
     if(trip.possibleTravelBuddiesIds.includes(userId)) return this.tripRepository.save(trip);
 
