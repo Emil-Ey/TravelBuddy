@@ -1,21 +1,22 @@
 input CreateCommentDto {
-	tripId: String!
-	text: String!
+  tripId: String!
+  text: String!
 }
 
 type CommentDto {
-	_id: String!
-	user: User!
-	text: String!
+  _id: String!
+  user: User!
+  text: String!
 }
 
 input UpdatedCommentDto {
-	_id: String!
-	text: String!
+  _id: String!
+  text: String!
 }
 
 type Mutation {
-	createComment(CreateCommentDto: CreateCommentDto!): CommentDto!
-	removeComment(updatedCommentDto: UpdatedCommentDto!): CommentDto!
-	clearDatabaseComments: Boolean
+  createComment(CreateCommentDto: CreateCommentDto!): CommentDto!
+  updateComment(UpdatedCommentDto: UpdatedCommentDto!): CommentDto!
+  removeComment(commentId: String!): CommentDto!
+  clearDatabaseComments: Boolean
 }

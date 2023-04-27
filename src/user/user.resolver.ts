@@ -16,11 +16,7 @@ export class UserResolver {
 
   @ResolveField("comments", () => [Comment])
   comment(@Root() user: User) {
-    let comments = [];
-    user.comments?.forEach(async comment => {
-      comments.push(await this.commentService.findOneById(comment._id))
-    })
-    return comments;
+    return this.commentService.findByUserId(user._id);
   }
 
   @ResolveField("trips", () => [Trip])

@@ -40,11 +40,7 @@ export class TripResolver {
 
   @ResolveField('comments', () => [Comment])
   comment(@Root() trip: Trip) {
-    let comments = [];
-    trip.comments?.forEach(async comment => {
-        comments.push(await this.commentService.findOneById(comment._id))
-    })
-    return comments;
+    return this.commentService.findByTripId(trip._id);
   }
 
   @UseGuards(JwtAuthGuard)

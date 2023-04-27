@@ -11,13 +11,20 @@ export class Comment {
   _id: string;
   
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { cascade: true })
+  @JoinTable()
   user: User
 
+  @Column()
+  userId: string;
+
   @Field(() => Trip)
-  @ManyToOne(() => Trip, (trip) => trip.comments)
+  @ManyToOne(() => Trip, (trip) => trip.comments, { cascade: true })
   @JoinTable()
   trip: Trip;
+
+  @Column()
+  tripId: string;
 
   @Field()
   @Column()

@@ -56,7 +56,7 @@ export class UserService {
     const user = new User();
 
     if(userDto.description.length > 200) {
-      throw new HttpException('Too long description', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Too long description. Max 200 characters.', HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -112,6 +112,7 @@ export class UserService {
     return this.findOneById(id)
   } 
 
+  // REMOVE IN PROD
   async clearDatabase(): Promise<Boolean> {
     await this.userRepository.query('DELETE FROM "user"');
     return true

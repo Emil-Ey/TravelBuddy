@@ -8,11 +8,13 @@ import { UserService } from 'src/user/user.service';
 import { Comment } from './comment.entity';
 import { CommentResolver } from './comment.resolver';
 import { CommentService } from './comment.service';
+import { TripService } from 'src/trip/trip.service';
+import { Trip } from 'src/trip/trip.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Comment]), PassportModule
+    TypeOrmModule.forFeature([User, Trip, Comment]), PassportModule
   ],
-  providers: [CommentResolver, CommentService, UserService, JwtStrategy, JwtService]
+  providers: [CommentResolver, CommentService, TripService, UserService, JwtStrategy, JwtService]
 })
 export class CommentModule {}
