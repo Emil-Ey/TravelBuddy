@@ -76,7 +76,7 @@ export class CommentService {
     const comment = await this.findOneById(commentDto._id);
 
     // Check if user is the "owner" of the comment
-    if(comment.userId != userId) throw new HttpException('You are not the owner of this comment.', HttpStatus.UNAUTHORIZED); 
+    if(comment.userId != userId) throw new HttpException('You are not the owner of this comment.', HttpStatus.FORBIDDEN); 
     
     // Create new object with appended arrays
     let newObj = { 'text': commentDto.text }
@@ -90,7 +90,7 @@ export class CommentService {
     const comment = await this.findOneById(commentId);
 
     // Check if user is the "owner" of the comment
-    if(comment.userId != userId) throw new HttpException('You are not the owner of this comment.', HttpStatus.UNAUTHORIZED); 
+    if(comment.userId != userId) throw new HttpException('You are not the owner of this comment.', HttpStatus.FORBIDDEN); 
     
     try {
       await this.commentRepository.delete({ _id: commentId });

@@ -33,7 +33,8 @@ A frontend might be created in the future, but for now only the backend is being
 
 ## Technologies
 
-The system architecture will be a monolith containing 3 layers: Resolver layer, service layer, and data access layer. This will allow for high decoupling and adaptability, and software that is maintainable.
+The system architecture will be a monolith containing 3 layers: Resolver layer, service layer, and data access layer. This will allow for high decoupling, adaptability, and software that is maintainable.
+
 The resolver layer will receive the incomming request, and call the relevant service. The services will contain all "business" logic, and will be written to be as reusable as possible. The data access layer will be containing of the framework TypeOrm, which will handle database access.
 The system will take advantage of the dependency injection used through the NestJS framework.
 The backend will be creating using the following technologies:
@@ -58,5 +59,5 @@ The system will be end-to-end tested using a testing framework that is to be det
   - Editing an existing trip.
   - Commenting on a specifc trip.
   - Adding yourself as a potential travel buddy to anothers trip.
-  - Accepting a travel buddy on your own trip. If the max number of travel buddies is reached, no more travel buddies can be found.
+  - Accepting a travel buddy on your own trip. The trips travels buddies will be immutable once the trip is no longer "openForMoreTravelBuddies".
   - More might be added as the scope is determined along the way.

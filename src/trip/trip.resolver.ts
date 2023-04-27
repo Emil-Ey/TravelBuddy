@@ -110,7 +110,7 @@ export class TripResolver {
       return this.tripService.removePossibleTravelBuddy(trip, travelBuddyDto.userId);
     }
 
-    throw new HttpException('You are not the owner of this trip, and cannot remove another user as a possible travel buddy', HttpStatus.UNAUTHORIZED);
+    throw new HttpException('You are not the owner of this trip, and cannot remove another user as a possible travel buddy', HttpStatus.FORBIDDEN);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -130,7 +130,7 @@ export class TripResolver {
       return this.tripService.promotePossibleTravelBuddy(trip, travelBuddyDto.userId);
     }
 
-    throw new HttpException('You are not the owner of this trip, and cannot promote a possible travel buddy', HttpStatus.UNAUTHORIZED);
+    throw new HttpException('You are not the owner of this trip, and cannot promote a possible travel buddy', HttpStatus.FORBIDDEN);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -150,7 +150,7 @@ export class TripResolver {
       return this.tripService.demoteTravelBuddy(trip, travelBuddyDto.userId);
     }
 
-    throw new HttpException('You are not the owner of this trip, and cannot demote a travel buddy', HttpStatus.UNAUTHORIZED);
+    throw new HttpException('You are not the owner of this trip, and cannot demote a travel buddy', HttpStatus.FORBIDDEN);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -170,7 +170,7 @@ export class TripResolver {
       return this.tripService.removeTravelBuddy(trip, travelBuddyDto.userId);
     }
 
-    throw new HttpException('You are not the owner of this trip, and cannot remove a travel buddy', HttpStatus.UNAUTHORIZED);
+    throw new HttpException('You are not the owner of this trip, and cannot remove a travel buddy', HttpStatus.FORBIDDEN);
   }
 
   // REMOVE IN PROD
