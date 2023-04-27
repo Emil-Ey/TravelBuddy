@@ -167,6 +167,24 @@ export class TripService {
     return this.tripRepository.save({...trip, ...newObj});
   }
 
+  async removeTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
+    // deep copy travelbuddiesIds
+    let travelBuddiesIdsCopy = JSON.parse(JSON.stringify(!trip.travelBuddiesIds ? [] : trip.travelBuddiesIds)); 
+
+    // Check user is already a travel buddy
+    if(!travelBuddiesIdsCopy.includes(userId)) {
+      throw new HttpException('Travel buddy not found', HttpStatus.NOT_FOUND);
+    }
+    // Remove user from possible travel buddy
+    travelBuddiesIdsCopy = travelBuddiesIdsCopy.filter((buddyId: string) => buddyId != userId);
+
+    // Create new object with appended travelBuddiesIds array
+    let newObj = { 'travelBuddiesIds': [...travelBuddiesIdsCopy] }
+
+    // Return the saved trip
+    return this.tripRepository.save({...trip, ...newObj});
+  }
+
   // REMOVE IN PROD
   async clearDatabase(): Promise<Boolean> {
     await this.tripRepository.query('DELETE FROM "trip"');
