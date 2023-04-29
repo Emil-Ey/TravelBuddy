@@ -11,6 +11,7 @@ import { UpdatedUserDto, UserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
+import * as fs from 'fs'
 
 @Resolver(User)
 export class UserResolver {
@@ -24,6 +25,12 @@ export class UserResolver {
   @ResolveField("trips", () => [Trip])
   trip(@Root() user: User) {
     return this.tripService.findByUserId(user._id);
+  }
+
+  @ResolveField("profileImgUrl", () => String)
+  profileImg(@Root() user: User) {
+    console.log(__dirname + `${user.profileImgUrl}`)
+    return fs.readFileSync(__dirname + `${user.profileImgUrl}`, {encoding: 'base64'});
   }
 
   @UseGuards(JwtAuthGuard)

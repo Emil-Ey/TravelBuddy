@@ -133,7 +133,7 @@ export class UserService {
     );
 
     // Create new object with appended arrays
-    let newObj = { 'profileImgUrl': __dirname + `/uploads/${filename}` }
+    let newObj = { 'profileImgUrl': `/uploads/${user._id + "." + fileExtension}` }
 
     // Return the saved trip
     return this.userRepository.save({...user, ...newObj});
