@@ -1,14 +1,16 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, ResolveField, Resolver, Root } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
+import { createWriteStream } from 'fs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { UpdatedUserDto, UserDto } from './user.dto';
-import { User } from './user.entity';
-import { UserService } from './user.service';
 import { Comment } from 'src/comment/comment.entity';
 import { CommentService } from 'src/comment/comment.service';
 import { Trip } from 'src/trip/trip.entity';
 import { TripService } from 'src/trip/trip.service';
+import { UpdatedUserDto, UserDto } from './user.dto';
+import { User } from './user.entity';
+import { UserService } from './user.service';
+import { GraphQLUpload, FileUpload } from 'graphql-upload';
 
 @Resolver(User)
 export class UserResolver {
@@ -46,6 +48,18 @@ export class UserResolver {
     const jwt = context.req.headers.authorization.replace('Bearer ', '');
     const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
     return this.userService.updateUser(user.id, updatedUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => User)
+  async updateUserWithProfieImg(
+    @Args({name: 'image', type: () => GraphQLUpload}) file : FileUpload,
+    @Context() context: any
+  ){
+    const jwt = context.req.headers.authorization.replace('Bearer ', '');
+    const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
+    
+    return this.userService.updateUserWithProfieImg(file, user.id)
   }
 
   // REMOVE IN PROD

@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdatedUserDto, UserDto } from './user.dto';
 import { User } from './user.entity';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import { FileUpload } from 'graphql-upload';
+import { createWriteStream } from 'fs';
 const argon2 = require('argon2');
 
 @Injectable()
@@ -11,6 +15,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly httpService: HttpService,
   ) {}
   
 
@@ -65,6 +70,7 @@ export class UserService {
       user.username = userDto.username;
       user.description = userDto.description;
       user.password = hashedPassword;
+      user.profileImgUrl = "";
       try {
         return await this.userRepository.save(user);
       } catch (err: any) {
@@ -111,6 +117,27 @@ export class UserService {
     // Cannot return object when saving, so we must find it again and return it.
     return this.findOneById(id)
   } 
+
+  async updateUserWithProfieImg(file: FileUpload, userId: string): Promise<User> {
+    let {filename ,mimetype, encoding, createReadStream} = file
+    let fileExtension = filename.split('.').pop();
+
+    // Get user
+    const user = await this.findOneById(userId);
+
+    new Promise(async (resolve, reject) =>
+    createReadStream()
+      .pipe(createWriteStream(__dirname + `/uploads/${user._id + "." + fileExtension}`))
+      .on("finish", () => resolve(true))
+      .on("error", (err: any) => {console.log(err); reject()})
+    );
+
+    // Create new object with appended arrays
+    let newObj = { 'profileImgUrl': __dirname + `/uploads/${filename}` }
+
+    // Return the saved trip
+    return this.userRepository.save({...user, ...newObj});
+  }
 
   // REMOVE IN PROD
   async clearDatabase(): Promise<Boolean> {

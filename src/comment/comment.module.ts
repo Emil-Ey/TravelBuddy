@@ -10,10 +10,11 @@ import { CommentResolver } from './comment.resolver';
 import { CommentService } from './comment.service';
 import { TripService } from 'src/trip/trip.service';
 import { Trip } from 'src/trip/trip.entity';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Trip, Comment]), PassportModule
+    TypeOrmModule.forFeature([User, Trip, Comment]), PassportModule, HttpModule
   ],
   providers: [CommentResolver, CommentService, TripService, UserService, JwtStrategy, JwtService]
 })

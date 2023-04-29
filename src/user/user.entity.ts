@@ -39,6 +39,10 @@ export class User {
   @ManyToMany(() => Trip, (trip) => trip.travelBuddies)
   acceptedTrips: Trip[];
 
+  @Field()
+  @Column({nullable: true})
+  profileImgUrl: string;
+
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
   created_at: Date;
 

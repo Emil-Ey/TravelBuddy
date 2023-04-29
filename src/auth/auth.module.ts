@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
+import { HttpModule } from '@nestjs/axios';
 require('dotenv').config();
 
 @Module({
@@ -17,6 +18,7 @@ require('dotenv').config();
       secret: process.env.JWT_KEY,
       signOptions: { expiresIn: '1000s' },
     }),
+    HttpModule
   ],
   providers: [AuthService, AuthResolver, UserService, JwtStrategy],
   exports: [AuthService],

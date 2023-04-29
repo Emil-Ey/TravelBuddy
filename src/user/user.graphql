@@ -2,6 +2,7 @@ type User {
   _id: String!
   username: String!
   description: String!
+  profileImgUrl: String
 }
 
 input UserDto {
@@ -26,6 +27,7 @@ type Mutation {
   createUser(userDto: UserDto!): User!
   updateUser(updatedUserDto: UpdatedUserDto!): User!
   deleteUser: Boolean!
+  updateUserWithProfieImg(image: Upload!): User!
 
   # REMOVE IN PROD
   clearDatabaseUsers: Boolean!
