@@ -55,7 +55,8 @@ The system will be end-to-end tested using a testing framework that is to be det
 - JWT tokens to handle auth.
 - CRUD operations where you can
   - Create / update your own user with a username, password, and small description.
-  - Create a new trip, specifying where, how long, how many travel buddies you are looking for and when. The trip might also have a cover photo.
+  - The user can also upload a profile picture. A base64 encoding of the users profile image can be retrieved.
+  - Create a new trip, specifying where, how long, how many travel buddies you are looking for and when.
   - Editing an existing trip.
   - Commenting on a specifc trip.
   - Adding yourself as a potential travel buddy to anothers trip.
