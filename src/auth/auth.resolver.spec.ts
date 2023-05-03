@@ -6,7 +6,7 @@ import { UserLoginDto } from './auth.dto';
 
 describe('AuthResolver', () => {
   let resolver: AuthResolver;
-  let uuid = uuidv4();
+  const uuid = uuidv4();
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -33,7 +33,7 @@ describe('AuthResolver', () => {
   describe('login', () => {
     it('should login and get access token', async () => {
       expect(
-        await resolver.login({username: "username", password: "password"})
+        await resolver.login({username: uuidv4(), password: uuidv4()})
       ).toEqual(
         { accessToken: uuid }
       );

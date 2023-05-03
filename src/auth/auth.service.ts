@@ -23,6 +23,9 @@ export class AuthService {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       }
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      }
       Logger.log(err, 'validateUser');
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
     }
