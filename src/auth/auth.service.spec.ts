@@ -4,6 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { User } from 'src/user/user.entity';
 const argon2 = require('argon2');
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<{}>;
@@ -65,13 +66,36 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should reject login with wrong password', async () => {
+    it('should reject login with wrong password with HttpException', async () => {
       hashedPassword = await argon2.hash(uuidv4());
       const returnUser = Promise.resolve({ _id: userId, username: username, password: hashedPassword, description: description });
       userServiceMock.findOneByUsername.mockReturnValue(returnUser)
 
       await expect(service.login({username: username, password: password}))
         .rejects.toEqual(new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED));
+    });
+  });
+
+  describe('login', () => {
+    it('should reject login with wrong username with HttpException', async () => {
+      userServiceMock.findOneByUsername.mockReturnValue(new HttpException('User not found', HttpStatus.NOT_FOUND))
+
+      await expect(service.login({username: username, password: password}))
+        .rejects.toEqual(new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR));
+    });
+  });
+
+  describe('generateJwt', () => {
+    it('should return accesstoken when given a user', async () => {
+      expect(
+        await service.generateJwt({
+          _id: userId,
+          username: username,
+          description: description
+        } as User)
+      ).toEqual(
+        { accessToken: token }
+      );
     });
   });
 });
