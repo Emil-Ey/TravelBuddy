@@ -72,7 +72,7 @@ export class TripService {
     }
   }
 
-  async updateTrip(updatedTripDto: UpdatedTripDto): Promise<Trip> {
+  async updateTrip(updatedTripDto: UpdatedTripDto, userId: string): Promise<Trip> {
     let id = updatedTripDto._id
     let newObj = {
       ...(updatedTripDto.country && { 'country': updatedTripDto.country}), 
@@ -82,7 +82,7 @@ export class TripService {
     }
 
     try {
-      await this.tripRepository.update({"_id": id}, newObj)
+      await this.tripRepository.update({"_id": id, "userId": userId}, newObj)
     } catch (err: any) {
       Logger.error(err, "updateTrip, updating database");
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);

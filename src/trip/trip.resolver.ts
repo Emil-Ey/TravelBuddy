@@ -65,9 +65,14 @@ export class TripResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Trip)
   async updateTrip(
-    @Args('updatedTripDto') updatedTripDto: UpdatedTripDto
+    @Args('updatedTripDto') updatedTripDto: UpdatedTripDto,
+    @Context() context: any
   ) {
-    return this.tripService.updateTrip(updatedTripDto);
+    // Get user id from JWT
+    const jwt = context.req.headers.authorization.replace('Bearer ', '');
+    const user = this.jwtService.decode(jwt, { json: true }) as { id: string };
+
+    return this.tripService.updateTrip(updatedTripDto, user.id);
   }
 
   @UseGuards(JwtAuthGuard)
