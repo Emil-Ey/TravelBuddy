@@ -119,7 +119,7 @@ export class UserService {
   } 
 
   async updateUserWithProfieImg(file: FileUpload, userId: string): Promise<User> {
-    let {filename ,mimetype, encoding, createReadStream} = file
+    let {filename , createReadStream} = file
     let fileExtension = filename.split('.').pop();
 
     // Get user

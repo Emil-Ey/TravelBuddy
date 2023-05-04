@@ -30,7 +30,6 @@ export class UserResolver {
   @ResolveField("profileImgUrl", () => String)
   profileImg(@Root() user: User) {
     if(!user.profileImgUrl) return "";
-    console.log(__dirname + `${user.profileImgUrl}`)
     return fs.readFileSync(__dirname + `${user.profileImgUrl}`, {encoding: 'base64'});
   }
 
