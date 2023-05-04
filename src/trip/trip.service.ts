@@ -63,7 +63,6 @@ export class TripService {
       trip.travelBuddies = [];
       trip.travelBuddiesIds = [];
       trip.openForMoreTravelBuddies = true;
-      console.log(trip);
       const newTrip = await this.tripRepository.save(trip);
       return newTrip;
     } catch (err: any) {

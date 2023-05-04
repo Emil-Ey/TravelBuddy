@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Logger, UseGuards } from '@nestjs/common';
+import { HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, ResolveField, Resolver, Root } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -9,8 +9,6 @@ import { UserService } from 'src/user/user.service';
 import { CreateTripDto, TravelBuddyDto, UpdatedTripDto } from './trip.dto';
 import { Trip } from './trip.entity';
 import { TripService } from './trip.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Resolver(Trip)
 export class TripResolver {
@@ -19,8 +17,6 @@ export class TripResolver {
     private userService: UserService, 
     private commentService: CommentService, 
     private jwtService: JwtService,
-    @InjectRepository(Trip)
-    private readonly tripRepository: Repository<Trip>
   ) {}
   
   @ResolveField('user', () => User)

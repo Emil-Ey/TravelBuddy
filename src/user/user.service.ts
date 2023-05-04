@@ -4,8 +4,6 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdatedUserDto, UserDto } from './user.dto';
 import { User } from './user.entity';
-import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
 import { FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
 const argon2 = require('argon2');
@@ -14,8 +12,7 @@ const argon2 = require('argon2');
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly httpService: HttpService,
+    private userRepository: Repository<User>,
   ) {}
   
 
@@ -30,7 +27,6 @@ export class UserService {
 
   async findUsersByIds(ids: string[]): Promise<User[]> {
     if(ids.length < 1) return []
-    console.log("USER IDS ", ids)
     try {
       return await this.userRepository.createQueryBuilder()
       .where("User._id IN (:...userIds)", { userIds: ids })
@@ -88,7 +84,7 @@ export class UserService {
     let hashedPassword = undefined
 
     if(updatedUserDto.description.length > 200) {
-      throw new HttpException('Too long description', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Too long description. Max 200 characters.', HttpStatus.BAD_REQUEST);
     }
 
     if(updatedUserDto.password) {
@@ -129,14 +125,19 @@ export class UserService {
     createReadStream()
       .pipe(createWriteStream(__dirname + `/uploads/${user._id + "." + fileExtension}`))
       .on("finish", () => resolve(true))
-      .on("error", (err: any) => {console.log(err); reject()})
+      .on("error", (err: any) => {Logger.error(err, "updateUserWithProfieImg, createReadStream"); reject()})
     );
 
     // Create new object with appended arrays
     let newObj = { 'profileImgUrl': `/uploads/${user._id + "." + fileExtension}` }
 
     // Return the saved trip
-    return this.userRepository.save({...user, ...newObj});
+    try {
+      return this.userRepository.save({...user, ...newObj});
+    } catch (err: any) {
+      Logger.log(err, "updateUserWithProfieImg, save to db")
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   // REMOVE IN PROD
