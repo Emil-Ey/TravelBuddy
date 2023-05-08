@@ -35,7 +35,7 @@ export class TripService {
     try {
       return await this.tripRepository.find({ where: {userId: userId}});
     } catch (err: any) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Trip not found', HttpStatus.NOT_FOUND);
     }
   }
 
@@ -63,8 +63,7 @@ export class TripService {
       trip.travelBuddies = [];
       trip.travelBuddiesIds = [];
       trip.openForMoreTravelBuddies = true;
-      const newTrip = await this.tripRepository.save(trip);
-      return newTrip;
+      return await this.tripRepository.save(trip);
     } catch (err: any) {
       if(err instanceof HttpException) throw err
       Logger.error(err, "create trip")
@@ -73,6 +72,11 @@ export class TripService {
   }
 
   async updateTrip(updatedTripDto: UpdatedTripDto, userId: string): Promise<Trip> {
+    // Verify valid input.
+    if(updatedTripDto.description.length > 400) {
+      throw new HttpException('Too long description', HttpStatus.BAD_REQUEST);
+    }
+
     let id = updatedTripDto._id
     let newObj = {
       ...(updatedTripDto.country && { 'country': updatedTripDto.country}), 
@@ -104,7 +108,7 @@ export class TripService {
     // Check if user is the "owner" of the trip
     if(trip.userId == userId) throw new HttpException('You are the owner of this trip and cannot be added as a possible travel buddy.', HttpStatus.FORBIDDEN);
     // Check if user is already in list of possible travel buddies
-    if(trip.possibleTravelBuddiesIds.includes(userId)) return this.tripRepository.save(trip);
+    if(trip.possibleTravelBuddiesIds.includes(userId) || trip.travelBuddiesIds.includes(userId)) return this.tripRepository.save(trip);
 
     // deep copy possibleTravelBuddiesIds
     let possibleTravelBuddiesIdsCopy = JSON.parse(JSON.stringify(!trip.possibleTravelBuddiesIds ? [] : trip.possibleTravelBuddiesIds)); 
@@ -113,7 +117,12 @@ export class TripService {
     let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy, userId] }
 
     // Return the saved trip
-    return this.tripRepository.save({...trip, ...newObj});
+    try {
+      return this.tripRepository.save({...trip, ...newObj});
+    } catch (err: any) {
+      Logger.error(err, "addPossibleTravelBuddy, updating database");
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async removePossibleTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
@@ -126,7 +135,12 @@ export class TripService {
     let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy] }
 
     // Return the saved trip
-    return this.tripRepository.save({...trip, ...newObj});
+    try {
+      return this.tripRepository.save({...trip, ...newObj});
+    } catch (err: any) {
+      Logger.error(err, "removePossibleTravelBuddy, updating database");
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async promotePossibleTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
@@ -147,7 +161,12 @@ export class TripService {
     let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy], 'travelBuddiesIds': [...travelBuddiesIdsCopy, userId] }
 
     // Return the saved trip
-    return this.tripRepository.save({...trip, ...newObj});
+    try {
+      return this.tripRepository.save({...trip, ...newObj});
+    } catch (err: any) {
+      Logger.error(err, "promotePossibleTravelBuddy, updating database");
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async demoteTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
@@ -168,7 +187,12 @@ export class TripService {
     let newObj = { 'possibleTravelBuddiesIds': [...possibleTravelBuddiesIdsCopy, userId], 'travelBuddiesIds': [...travelBuddiesIdsCopy] }
 
     // Return the saved trip
-    return this.tripRepository.save({...trip, ...newObj});
+    try {
+      return this.tripRepository.save({...trip, ...newObj});
+    } catch (err: any) {
+      Logger.error(err, "demoteTravelBuddy, updating database");
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async removeTravelBuddy(trip: Trip, userId: string): Promise<Trip> {
@@ -186,7 +210,12 @@ export class TripService {
     let newObj = { 'travelBuddiesIds': [...travelBuddiesIdsCopy] }
 
     // Return the saved trip
-    return this.tripRepository.save({...trip, ...newObj});
+    try {
+      return this.tripRepository.save({...trip, ...newObj});
+    } catch (err: any) {
+      Logger.error(err, "removeTravelBuddy, updating database");
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   // REMOVE IN PROD

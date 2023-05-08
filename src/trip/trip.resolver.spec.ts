@@ -164,7 +164,7 @@ describe('TripResolver', () => {
   });
 
   describe('removePossibleTravelBuddy', () => {
-    it('should HttpException if ids dont match', async () => {
+    it('should throw HttpException if ids dont match', async () => {
       tripServiceMock.findOneById.mockReturnValue(mockTrip);
       jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
       tripServiceMock.removePossibleTravelBuddy.mockReturnValue(mockTrip);
@@ -173,7 +173,119 @@ describe('TripResolver', () => {
         .rejects.toEqual(new HttpException('You are not the owner of this trip, and cannot remove another user as a possible travel buddy', HttpStatus.FORBIDDEN));
     });
   });
+
+  describe('promotePossibleTravelBuddy', () => {
+    it('should throw HttpException if tripService.findOneById throws exception', async () => {
+      jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
+      tripServiceMock.findOneById.mockImplementation(() => {
+        throw new HttpException('Trip not found', HttpStatus.NOT_FOUND);
+      });
+
+      await expect(resolver.promotePossibleTravelBuddy({} as TravelBuddyDto, context))
+        .rejects.toEqual(new HttpException('Trip not found', HttpStatus.NOT_FOUND));
+    });
+  });
+
+  describe('promotePossibleTravelBuddy', () => {
+    it('should return what tripService.promotePossibleTravelBuddy returns', async () => {
+      tripServiceMock.findOneById.mockReturnValue(mockTrip);
+      jwtServiceMock.decode.mockReturnValue({id: userId});
+      tripServiceMock.promotePossibleTravelBuddy.mockReturnValue(mockTrip);
+
+      expect(
+        await resolver.promotePossibleTravelBuddy({userId: userId} as TravelBuddyDto, context)
+      ).toEqual(
+        mockTrip
+      );
+    });
+  });
+
+  describe('promotePossibleTravelBuddy', () => {
+    it('should throw HttpException if ids dont match', async () => {
+      tripServiceMock.findOneById.mockReturnValue(mockTrip);
+      jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
+      tripServiceMock.promotePossibleTravelBuddy.mockReturnValue(mockTrip);
+
+      await expect(resolver.promotePossibleTravelBuddy({} as TravelBuddyDto, context))
+        .rejects.toEqual(new HttpException('You are not the owner of this trip, and cannot promote a possible travel buddy', HttpStatus.FORBIDDEN));
+    });
+  });
   
+  describe('demoteTravelBuddy', () => {
+    it('should throw HttpException if tripService.findOneById throws exception', async () => {
+      jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
+      tripServiceMock.findOneById.mockImplementation(() => {
+        throw new HttpException('Trip not found', HttpStatus.NOT_FOUND);
+      });
+
+      await expect(resolver.demoteTravelBuddy({} as TravelBuddyDto, context))
+        .rejects.toEqual(new HttpException('Trip not found', HttpStatus.NOT_FOUND));
+    });
+  });
+
+  describe('demoteTravelBuddy', () => {
+    it('should return what tripService.promotePossibleTravelBuddy returns', async () => {
+      tripServiceMock.findOneById.mockReturnValue(mockTrip);
+      jwtServiceMock.decode.mockReturnValue({id: userId});
+      tripServiceMock.demoteTravelBuddy.mockReturnValue(mockTrip);
+
+      expect(
+        await resolver.demoteTravelBuddy({userId: userId} as TravelBuddyDto, context)
+      ).toEqual(
+        mockTrip
+      );
+    });
+  });
+
+  describe('demoteTravelBuddy', () => {
+    it('should throw HttpException if ids dont match', async () => {
+      tripServiceMock.findOneById.mockReturnValue(mockTrip);
+      jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
+      tripServiceMock.demoteTravelBuddy.mockReturnValue(mockTrip);
+
+      await expect(resolver.demoteTravelBuddy({} as TravelBuddyDto, context))
+        .rejects.toEqual(new HttpException('You are not the owner of this trip, and cannot demote a travel buddy', HttpStatus.FORBIDDEN));
+    });
+  });
+
+  describe('removeTravelBuddy', () => {
+    it('should throw HttpException if tripService.findOneById throws exception', async () => {
+      jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
+      tripServiceMock.findOneById.mockImplementation(() => {
+        throw new HttpException('Trip not found', HttpStatus.NOT_FOUND);
+      });
+
+      await expect(resolver.removeTravelBuddy({} as TravelBuddyDto, context))
+        .rejects.toEqual(new HttpException('Trip not found', HttpStatus.NOT_FOUND));
+    });
+  });
+
+  describe('removeTravelBuddy', () => {
+    it('should return what tripService.promotePossibleTravelBuddy returns', async () => {
+      tripServiceMock.findOneById.mockReturnValue(mockTrip);
+      jwtServiceMock.decode.mockReturnValue({id: userId});
+      tripServiceMock.removeTravelBuddy.mockReturnValue(mockTrip);
+
+      expect(
+        await resolver.removeTravelBuddy({userId: userId} as TravelBuddyDto, context)
+      ).toEqual(
+        mockTrip
+      );
+    });
+  });
+
+  describe('removeTravelBuddy', () => {
+    it('should throw HttpException if ids dont match', async () => {
+      tripServiceMock.findOneById.mockReturnValue(mockTrip);
+      jwtServiceMock.decode.mockReturnValue({id: uuidv4()});
+      tripServiceMock.removeTravelBuddy.mockReturnValue(mockTrip);
+
+      await expect(resolver.removeTravelBuddy({} as TravelBuddyDto, context))
+        .rejects.toEqual(new HttpException('You are not the owner of this trip, and cannot remove a travel buddy', HttpStatus.FORBIDDEN));
+    });
+  });
+  
+
   // FIELD RESOLVERS
 
   describe('user', () => {
