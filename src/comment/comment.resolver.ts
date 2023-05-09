@@ -16,7 +16,7 @@ export class CommentResolver {
 
 
   @ResolveField("user", () => User)
-  comment(@Root() comment: Comment) {
+  user(@Root() comment: Comment) {
     return this.userService.findOneById(comment.userId);
   }
 

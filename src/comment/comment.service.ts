@@ -23,7 +23,7 @@ export class CommentService {
 
   async findOneById(id: string): Promise<Comment> {
     try {
-      return await this.commentRepository.findOneBy({ _id: id });
+      return await this.commentRepository.findOneByOrFail({ _id: id });
     } catch (err: any) {
       throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
     }
@@ -33,7 +33,7 @@ export class CommentService {
     try {
       return await this.commentRepository.find({ where: {userId: userId}});
     } catch (err: any) {
-      throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+      return [];
     }
   }
 

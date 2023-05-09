@@ -26,7 +26,6 @@ describe('TripService', () => {
   };
   const mockTrip = {_id: uuidv4()};
   const mockUser = {_id: uuidv4()};
-  const mockComment = {_id: uuidv4()};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
